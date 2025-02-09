@@ -4,7 +4,8 @@ import { MapPinIcon } from '@heroicons/react/24/solid';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useEffect, useState } from 'react';
-import { MapContainer, Marker, Popup, TileLayer, ZoomControl } from 'react-leaflet';
+import { LayersControl, MapContainer, Marker, Popup, TileLayer, ZoomControl } from 'react-leaflet';
+import AviationLayer from './AviationLayer';
 
 // Özel marker ikonu oluşturuyoruz
 const createCustomIcon = () => {
@@ -58,11 +59,31 @@ const Map = ({ center, location }: MapProps) => {
       zoomControl={false}
       ref={setMap}
     >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+      <LayersControl position="topright">
+        {/* Base map layer */}
+        <LayersControl.BaseLayer checked name="OpenStreetMap">
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+        </LayersControl.BaseLayer>
+
+        {/* Satellite layer */}
+        <LayersControl.BaseLayer name="Satellite">
+          <TileLayer
+            attribution='&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+          />
+        </LayersControl.BaseLayer>
+
+        {/* Aviation layer */}
+        <LayersControl.Overlay checked name="Aviation Data">
+          <AviationLayer center={center} radius={100} />
+        </LayersControl.Overlay>
+      </LayersControl>
+
       <ZoomControl position="bottomright" />
+
       {customIcon && (
         <Marker position={center} icon={customIcon}>
           <Popup className="custom-popup">

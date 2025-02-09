@@ -10,20 +10,24 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@turf/turf": "^7.2.0",
     "@types/leaflet": "^1.9.16",
     "axios": "^1.7.9",
+    "date-fns": "^4.1.0",
     "framer-motion": "^12.4.1",
     "leaflet": "^1.9.4",
     "next": "15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-leaflet": "^5.0.0"
+    "react-leaflet": "^5.0.0",
+    "swr": "^2.3.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/turf": "^3.5.32",
     "eslint": "^9",
     "eslint-config-next": "15.1.6",
     "postcss": "^8",
