@@ -1,6 +1,7 @@
 'use client';
 
-import { ArrowPathIcon, EyeIcon, MapIcon } from '@heroicons/react/24/outline';
+import AnimatedLogo from '@/components/AnimatedLogo';
+import { ArrowPathIcon, MapIcon } from '@heroicons/react/24/outline';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import 'leaflet/dist/leaflet.css';
@@ -81,9 +82,7 @@ export default function Home() {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="space-y-8">
-            <div className="flex items-center justify-center">
-              <EyeIcon className="h-12 w-12 text-blue-500 dark:text-blue-400 animate-pulse" />
-            </div>
+            <AnimatedLogo />
             <div className="space-y-4">
               <div className="h-8 bg-gradient-to-r from-blue-100 to-blue-200 dark:from-gray-700 dark:to-gray-600 rounded-full w-1/3 mx-auto animate-pulse" />
               <div className="h-32 bg-gradient-to-r from-blue-100 to-blue-200 dark:from-gray-700 dark:to-gray-600 rounded-lg animate-pulse" />
@@ -130,7 +129,7 @@ export default function Home() {
     >
       <div className="max-w-4xl mx-auto">
         <motion.div variants={itemVariants} className="text-center mb-12">
-          <EyeIcon className="h-16 w-16 text-blue-500 dark:text-blue-400 mx-auto mb-4" />
+          <AnimatedLogo />
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
             GodEye
           </h1>
