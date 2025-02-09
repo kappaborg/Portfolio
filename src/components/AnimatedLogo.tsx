@@ -1,15 +1,12 @@
 'use client';
 
 import { useTheme } from '@/context/ThemeContext';
-import { motion, useAnimation, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 export default function AnimatedLogo() {
   const { theme } = useTheme();
-  const controls = useAnimation();
   const [isBlinking, setIsBlinking] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [deviceOrientation, setDeviceOrientation] = useState({ beta: 0, gamma: 0 });
 
   // Mouse/Gyroscope takibi için spring animasyonları
   const x = useMotionValue(0);
@@ -55,11 +52,6 @@ export default function AnimatedLogo() {
   useEffect(() => {
     const handleOrientation = (e: DeviceOrientationEvent) => {
       if (e.beta !== null && e.gamma !== null) {
-        setDeviceOrientation({
-          beta: e.beta,
-          gamma: e.gamma
-        });
-        
         // Cihaz eğimine göre göz bebeği hareketi
         x.set(e.gamma);
         y.set(e.beta / 2);
@@ -188,20 +180,6 @@ export default function AnimatedLogo() {
           }}
         />
       ))}
-
-      {/* Error durumu için kırmızı halka */}
-      <motion.div
-        className="absolute inset-0 rounded-full border-2 border-red-500/0"
-        animate={{
-          borderColor: ['rgba(239, 68, 68, 0)', 'rgba(239, 68, 68, 0)'],
-          scale: [1, 1.2],
-        }}
-        transition={{
-          duration: 0.3,
-          repeat: Infinity,
-          repeatType: "reverse",
-        }}
-      />
     </motion.div>
   );
 } 
