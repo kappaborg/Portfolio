@@ -8,6 +8,9 @@ import 'leaflet/dist/leaflet.css';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
+
+
+
 // Dinamik olarak harita bileşenini yüklüyoruz (SSR sorunlarını önlemek için)
 const MapComponent = dynamic(() => import('../components/Map'), {
   ssr: false,
