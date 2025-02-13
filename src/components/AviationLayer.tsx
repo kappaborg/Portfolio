@@ -16,7 +16,6 @@ export default function AviationLayer({ center, radius }: AviationLayerProps) {
   const map = useMap();
   const { theme } = useTheme();
   const [flights, setFlights] = useState<FlightData[]>([]);
-  const [selectedFlight, setSelectedFlight] = useState<FlightData | null>(null);
   const [flightPaths, setFlightPaths] = useState<{ id: string; path: [number, number][] }[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -77,7 +76,7 @@ export default function AviationLayer({ center, radius }: AviationLayerProps) {
     };
 
     fetchFlights();
-    interval = setInterval(fetchFlights, 10000); // Her 10 saniyede bir güncelle
+     interval = setInterval(fetchFlights, 10000); // Her 10 saniyede bir güncelle
 
     return () => {
       clearInterval(interval);
