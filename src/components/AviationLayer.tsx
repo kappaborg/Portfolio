@@ -2,6 +2,7 @@
 
 import { useTheme } from '@/context/ThemeContext';
 import { aviationService, FlightData } from '@/services/aviationService';
+import { setSelectedFlight } from '@/store/flightSlice';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Circle, Polyline, Popup, useMap } from 'react-leaflet';
