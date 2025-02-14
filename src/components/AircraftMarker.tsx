@@ -38,7 +38,7 @@ export default function AircraftMarker({ position, heading, onClick, isDark = fa
       iconSize: [24, 24],
       iconAnchor: [12, 12],
     });
-  }, [iconSvg, heading, isDark]);
+  }, [iconSvg]);
 
   // CSS stillerini ekle
   useEffect(() => {
