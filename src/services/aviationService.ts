@@ -1,7 +1,8 @@
 // Gerekli importlar
-import type { Feature, LineString } from '@turf/turf';
+import { lineString } from '@turf/helpers';
 import * as turf from '@turf/turf';
 import { format } from 'date-fns';
+import { Feature, LineString } from 'geojson';
 
 // Uçuş verisi interface'i
 export interface FlightData {
@@ -87,18 +88,14 @@ class AviationService {
 
   // Uçuş rotası hesapla
   calculateFlightPath(startPoint: [number, number], endPoint: [number, number]): Feature<LineString> {
-    return turf.greatCircle(
-      turf.point(startPoint),
-      turf.point(endPoint),
-      { steps: 100 }
-    );
+    return lineString([startPoint, endPoint]);
   }
 
   // Uçuş mesafesi hesapla
   calculateDistance(startPoint: [number, number], endPoint: [number, number]): number {
     const from = turf.point(startPoint);
     const to = turf.point(endPoint);
-    return turf.distance(from, to, { units: 'kilometers' });
+    return turf.distance(from,to);
   }
 
   // Uçuş süresini tahmin et
@@ -108,25 +105,25 @@ class AviationService {
   }
 
   // Uçuş verilerini dönüştür
-  private transformFlightData(data: any): FlightData[] {
+  private transformFlightData(data: Record<string, unknown>): FlightData[] {
     const flights: FlightData[] = [];
     
     for (const key in data) {
       if (key !== 'full_count' && key !== 'version' && Array.isArray(data[key])) {
-        const flight = data[key];
+        const flight = data[key] as (string | number | null)[];
         flights.push({
           id: key,
-          callsign: flight[0] || 'Unknown',
-          latitude: flight[1],
-          longitude: flight[2],
-          heading: flight[3],
-          altitude: flight[4],
-          speed: flight[5],
-          airline: flight[8] || 'Unknown',
-          origin: flight[11] || 'Unknown',
-          destination: flight[12] || 'Unknown',
-          aircraft: flight[9] || 'Unknown',
-          status: flight[14] || 'Unknown'
+          callsign: String(flight[0] || 'Unknown'),
+          latitude: Number(flight[1] || 0),
+          longitude: Number(flight[2] || 0),
+          heading: Number(flight[3] || 0),
+          altitude: Number(flight[4] || 0),
+          speed: Number(flight[5] || 0),
+          airline: String(flight[8] || 'Unknown'),
+          origin: String(flight[11] || 'Unknown'),
+          destination: String(flight[12] || 'Unknown'),
+          aircraft: String(flight[9] || 'Unknown'),
+          status: String(flight[14] || 'Unknown')
         });
       }
     }
