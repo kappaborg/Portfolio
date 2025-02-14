@@ -26,7 +26,7 @@ export default function AircraftMarker({ position, heading, onClick, isDark = fa
       html: `
         <div class="relative">
           <div class="absolute transform -translate-x-1/2 -translate-y-1/2">
-            ${iconSvg}
+            ${[iconSvg]}
             <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
               <div class="animate-ping absolute h-2 w-2 rounded-full bg-blue-400 opacity-75"></div>
               <div class="relative h-2 w-2 rounded-full bg-blue-500"></div>
