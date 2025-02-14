@@ -19,6 +19,7 @@ export default function AviationLayer({ center, radius }: AviationLayerProps) {
   const [flights, setFlights] = useState<FlightData[]>([]);
   const [flightPaths, setFlightPaths] = useState<{ id: string; path: [number, number][] }[]>([]);
   const [loading, setLoading] = useState(true);
+  let interval: NodeJS.Timeout;
 
   // Harita sınırlarını hesapla
   const calculateBoundingBox = (center: [number, number], radiusKm: number) => {
@@ -40,7 +41,6 @@ export default function AviationLayer({ center, radius }: AviationLayerProps) {
   // Uçuş verilerini periyodik olarak güncelle
   useEffect(() => {
     const bounds = calculateBoundingBox(center, radius);
-    let interval: NodeJS.Timeout;
 
     const fetchFlights = async () => {
       try {
