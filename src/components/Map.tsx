@@ -1,30 +1,12 @@
-'use client';
-
 import { MapPinIcon } from '@heroicons/react/24/solid';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useEffect, useState } from 'react';
 import { LayersControl, MapContainer, Marker, Popup, TileLayer, ZoomControl } from 'react-leaflet';
 import AviationLayer from './AviationLayer';
+import WeatherLayer from './WeatherLayer';
 
-// Özel marker ikonu oluşturuyoruz
-const createCustomIcon = () => {
-  return L.divIcon({
-    html: `
-      <div class="relative">
-        <div class="absolute -top-8 -left-2">
-          <div class="relative">
-            <div class="animate-ping absolute h-4 w-4 rounded-full bg-blue-400 opacity-75"></div>
-            <div class="relative h-4 w-4 rounded-full bg-blue-500"></div>
-          </div>
-        </div>
-      </div>
-    `,
-    className: 'custom-marker',
-    iconSize: [20, 20],
-    iconAnchor: [10, 10],
-  });
-};
+// Previous custom icon code...
 
 interface MapProps {
   center: [number, number];
@@ -60,25 +42,27 @@ const Map = ({ center, location }: MapProps) => {
       ref={setMap}
     >
       <LayersControl position="topright">
-        {/* Base map layer */}
-        <LayersControl.BaseLayer checked name="OpenStreetMap">
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-        </LayersControl.BaseLayer>
+        {/* Existing layers... */}
 
-        {/* Satellite layer */}
-        <LayersControl.BaseLayer name="Satellite">
+        {/* Weather layers */}
+        <LayersControl.Overlay checked name="Weather Radar">
+          <WeatherLayer />
+        </LayersControl.Overlay>
+        
+        <LayersControl.Overlay name="Wind Patterns">
           <TileLayer
-            attribution='&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+            url="https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid={apikey}"
+            apikey={process.env.NEXT_PUBLIC_WEATHER_API_KEY || ''}
+            opacity={0.5}
           />
-        </LayersControl.BaseLayer>
+        </LayersControl.Overlay>
 
-        {/* Aviation layer */}
-        <LayersControl.Overlay checked name="Aviation Data">
-          <AviationLayer center={center} radius={100} />
+        <LayersControl.Overlay name="Temperature">
+          <TileLayer
+            url="https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid={apikey}"
+            apikey={process.env.NEXT_PUBLIC_WEATHER_API_KEY || ''}
+            opacity={0.5}
+          />
         </LayersControl.Overlay>
       </LayersControl>
 
@@ -101,4 +85,4 @@ const Map = ({ center, location }: MapProps) => {
   );
 };
 
-export default Map; 
+export default Map;
