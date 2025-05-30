@@ -6,7 +6,25 @@ import { LayersControl, MapContainer, Marker, Popup, TileLayer, ZoomControl } fr
 import AviationLayer from './AviationLayer';
 import WeatherLayer from './WeatherLayer';
 
-// Previous custom icon code...
+const createCustomIcon = () => {
+  return L.divIcon({
+    className: 'custom-marker-icon',
+    html: `
+      <div class="relative w-8 h-8 flex items-center justify-center transform -translate-x-1/2 -translate-y-full">
+        <div class="absolute w-8 h-8 bg-blue-500 rounded-full opacity-20 animate-ping"></div>
+        <div class="relative w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center shadow-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="absolute bottom-0 left-1/2 w-2 h-2 bg-blue-500 transform rotate-45 translate-y-1/2 -translate-x-1/2"></div>
+      </div>
+    `,
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32]
+  });
+};
 
 interface MapProps {
   center: [number, number];
@@ -42,8 +60,6 @@ const Map = ({ center, location }: MapProps) => {
       ref={setMap}
     >
       <LayersControl position="topright">
-        {/* Existing layers... */}
-
         {/* Weather layers */}
         <LayersControl.Overlay checked name="Weather Radar">
           <WeatherLayer />
