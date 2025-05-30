@@ -8,10 +8,17 @@
   --background-end-rgb: 255, 255, 255;
 }
 
-/* Leaflet popup özelleştirmeleri */
+/* Leaflet popup customizations */
 .leaflet-popup-content-wrapper {
   border-radius: 1rem !important;
   padding: 0.5rem !important;
+  backdrop-filter: blur(8px) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+.dark .leaflet-popup-content-wrapper {
+  background: rgba(31, 41, 55, 0.95) !important;
+  color: white !important;
 }
 
 .leaflet-popup-content {
@@ -23,13 +30,10 @@
 }
 
 .custom-popup .leaflet-popup-content-wrapper {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
   border: 1px solid rgba(59, 130, 246, 0.1);
 }
 
 .custom-popup .leaflet-popup-tip {
-  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
 }
 
@@ -49,6 +53,10 @@ html {
   border-radius: 4px;
 }
 
+.dark ::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
 ::-webkit-scrollbar-thumb {
   background: #94a3b8;
   border-radius: 4px;
@@ -58,7 +66,7 @@ html {
   background: #64748b;
 }
 
-/* Genel animasyonlar */
+/* General animations */
 @keyframes float {
   0% {
     transform: translateY(0px);
@@ -73,4 +81,42 @@ html {
 
 .animate-float {
   animation: float 3s ease-in-out infinite;
+}
+
+/* Custom marker animations */
+.custom-marker-icon {
+  transition: transform 0.3s ease-out;
+}
+
+.custom-marker-icon:hover {
+  transform: scale(1.1);
+}
+
+/* Loading animation */
+.loading-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
+
+/* Easter egg animation */
+@keyframes rainbow {
+  0% { color: #ff0000; }
+  17% { color: #ff8000; }
+  33% { color: #ffff00; }
+  50% { color: #00ff00; }
+  67% { color: #0000ff; }
+  83% { color: #8000ff; }
+  100% { color: #ff0000; }
+}
+
+.rainbow-text {
+  animation: rainbow 5s linear infinite;
 }

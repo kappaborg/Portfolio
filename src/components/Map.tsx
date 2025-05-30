@@ -1,3 +1,5 @@
+'use client';
+
 import { MapPinIcon } from '@heroicons/react/24/solid';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -37,6 +39,8 @@ interface MapProps {
 const Map = ({ center, location }: MapProps) => {
   const [map, setMap] = useState<L.Map | null>(null);
   const [customIcon, setCustomIcon] = useState<L.DivIcon | null>(null);
+  const [showEasterEgg, setShowEasterEgg] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
 
   useEffect(() => {
     setCustomIcon(createCustomIcon());
@@ -50,6 +54,17 @@ const Map = ({ center, location }: MapProps) => {
     }
   }, [center, map]);
 
+  const handleMarkerClick = () => {
+    setClickCount(prev => {
+      const newCount = prev + 1;
+      if (newCount === 5) {
+        setShowEasterEgg(true);
+        return 0;
+      }
+      return newCount;
+    });
+  };
+
   return (
     <MapContainer
       center={center}
@@ -58,44 +73,65 @@ const Map = ({ center, location }: MapProps) => {
       style={{ height: '100%', width: '100%' }}
       zoomControl={false}
       ref={setMap}
+      className="relative"
     >
       <LayersControl position="topright">
-        {/* Weather layers */}
-        <LayersControl.Overlay checked name="Weather Radar">
+        <LayersControl.BaseLayer checked name="Standard">
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+        </LayersControl.BaseLayer>
+        
+        <LayersControl.BaseLayer name="Satellite">
+          <TileLayer
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+            attribution='&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+          />
+        </LayersControl.BaseLayer>
+
+        <LayersControl.BaseLayer name="Dark Mode">
+          <TileLayer
+            url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
+            attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>'
+          />
+        </LayersControl.BaseLayer>
+
+        <LayersControl.Overlay checked name="Weather">
           <WeatherLayer />
         </LayersControl.Overlay>
-        
-        <LayersControl.Overlay name="Wind Patterns">
-          <TileLayer
-            url="https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid={apikey}"
-            apikey={process.env.NEXT_PUBLIC_WEATHER_API_KEY || ''}
-            opacity={0.5}
-          />
-        </LayersControl.Overlay>
 
-        <LayersControl.Overlay name="Temperature">
-          <TileLayer
-            url="https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid={apikey}"
-            apikey={process.env.NEXT_PUBLIC_WEATHER_API_KEY || ''}
-            opacity={0.5}
-          />
+        <LayersControl.Overlay checked name="Aviation">
+          <AviationLayer center={center} radius={100} />
         </LayersControl.Overlay>
       </LayersControl>
 
       <ZoomControl position="bottomright" />
 
       {customIcon && (
-        <Marker position={center} icon={customIcon}>
+        <Marker 
+          position={center} 
+          icon={customIcon}
+          eventHandlers={{
+            click: handleMarkerClick
+          }}
+        >
           <Popup className="custom-popup">
             <div className="text-center">
               <MapPinIcon className="h-6 w-6 text-blue-500 mx-auto mb-2" />
-              <div className="font-medium text-gray-900">Buradasınız!</div>
+              <div className="font-medium text-gray-900">You are here!</div>
               <div className="text-gray-600">
                 {location.city}, {location.country}
               </div>
             </div>
           </Popup>
         </Marker>
+      )}
+
+      {showEasterEgg && (
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg animate-bounce">
+          🎉 You found the secret! 🎉
+        </div>
       )}
     </MapContainer>
   );
