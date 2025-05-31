@@ -5,11 +5,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
   transform: translateZ(0);
   backface-visibility: hidden;
   perspective: 1000px;
   will-change: transform;
+  margin-bottom: 4rem;
 }
 
 .orbit-container {
@@ -91,7 +91,7 @@
 @media (max-width: 768px) {
   .project-circle-container {
     transform: scale(0.75);
-    margin-top: -5rem;
+    margin-top: -2rem;
   }
 
   .project-orbit-item {
@@ -106,7 +106,7 @@
 @media (max-width: 480px) {
   .project-circle-container {
     transform: scale(0.6);
-    margin-top: -8rem;
+    margin-top: -4rem;
   }
 
   .project-orbit-item {
