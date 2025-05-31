@@ -19,6 +19,56 @@ export const metadata: Metadata = {
   viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0',
 };
 
+// Client Component wrapper
+const ClientLayout = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <ErrorBoundary>
+      <DefaultSeo 
+        title="Kappasutra Portfolio"
+        description="Futuristic portfolio showcasing innovative projects and developments"
+        canonical="https://your-portfolio-url.com"
+        openGraph={{
+          type: 'website',
+          locale: 'en_US',
+          url: 'https://your-portfolio-url.com',
+          siteName: 'Kappasutra Portfolio',
+          title: 'Kappasutra Portfolio',
+          description: 'Futuristic portfolio showcasing innovative projects and developments',
+          images: [
+            {
+              url: '/og-image.png',
+              width: 1200,
+              height: 630,
+              alt: 'Kappasutra Portfolio',
+            }
+          ],
+        }}
+        twitter={{
+          handle: '@yourtwitterhandle',
+          site: '@yourtwitterhandle',
+          cardType: 'summary_large_image',
+        }}
+        additionalMetaTags={[
+          {
+            name: 'viewport',
+            content: 'width=device-width, initial-scale=1, maximum-scale=1',
+          },
+          {
+            name: 'apple-mobile-web-app-capable',
+            content: 'yes',
+          },
+          {
+            name: 'theme-color',
+            content: '#ea580c',
+          },
+        ]}
+      />
+      {children}
+      <Analytics />
+    </ErrorBoundary>
+  );
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -36,50 +86,9 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${inter.className} transition-colors duration-300 bg-black text-white overflow-hidden`}>
-        <ErrorBoundary>
-          <DefaultSeo 
-            title="Kappasutra Portfolio"
-            description="Futuristic portfolio showcasing innovative projects and developments"
-            canonical="https://your-portfolio-url.com"
-            openGraph={{
-              type: 'website',
-              locale: 'en_US',
-              url: 'https://your-portfolio-url.com',
-              siteName: 'Kappasutra Portfolio',
-              title: 'Kappasutra Portfolio',
-              description: 'Futuristic portfolio showcasing innovative projects and developments',
-              images: [
-                {
-                  url: '/og-image.png',
-                  width: 1200,
-                  height: 630,
-                  alt: 'Kappasutra Portfolio',
-                }
-              ],
-            }}
-            twitter={{
-              handle: '@yourtwitterhandle',
-              site: '@yourtwitterhandle',
-              cardType: 'summary_large_image',
-            }}
-            additionalMetaTags={[
-              {
-                name: 'viewport',
-                content: 'width=device-width, initial-scale=1, maximum-scale=1',
-              },
-              {
-                name: 'apple-mobile-web-app-capable',
-                content: 'yes',
-              },
-              {
-                name: 'theme-color',
-                content: '#ea580c',
-              },
-            ]}
-          />
+        <ClientLayout>
           {children}
-          <Analytics />
-        </ErrorBoundary>
+        </ClientLayout>
       </body>
     </html>
   );
