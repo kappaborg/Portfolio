@@ -764,7 +764,7 @@ body {
   padding: 6rem 2rem;
   text-align: center;
   perspective: 1500px;
-  min-height: 40vh;
+  min-height: 20vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -990,7 +990,7 @@ body {
   display: flex;
   gap: 1rem;
   justify-content: center;
-  margin-top: 2rem;
+  margin-top: 0rem;
 }
 
 .badge {
