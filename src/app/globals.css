@@ -1,67 +1,13 @@
-/* Add to your existing globals.css */
-.project-card-container {
-  perspective: 1000px;
-  transform-style: preserve-3d;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground: #ffffff;
+  --background: #000000;
 }
 
-.project-card {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  cursor: pointer;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 1rem;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.project-card:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
-}
-
-.central-hub {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 120px;
-  height: 120px;
-  background: rgba(0, 0, 0, 0.8);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 20;
-}
-
-.hub-content {
-  text-align: center;
-}
-
-.hub-text {
-  font-size: 1rem;
-  font-weight: bold;
-  color: white;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-}
-
-@media (max-width: 768px) {
-  .project-card-container {
-    transform: scale(0.8);
-  }
-  
-  .central-hub {
-    width: 90px;
-    height: 90px;
-  }
-  
-  .hub-text {
-    font-size: 0.8rem;
-  }
+body {
+  color: var(--foreground);
+  background: var(--background);
 }

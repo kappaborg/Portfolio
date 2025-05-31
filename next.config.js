@@ -9,13 +9,11 @@ const nextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
   webpack: (config, { isServer }) => {
-    // SVG configuration
     config.module.rules.push({
       test: /\.svg$/,
       use: ['@svgr/webpack'],
     });
 
-    // Handle client-side modules
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -27,18 +25,11 @@ const nextConfig = {
 
     return config;
   },
-  // Transpile specific modules
   transpilePackages: [
     'three',
     '@react-three/fiber',
     '@react-three/drei',
   ],
-  experimental: {
-    optimizeCss: true,
-    scrollRestoration: true,
-    optimizePackageImports: ['@heroicons/react', 'framer-motion', 'react-icons'],
-    webVitalsAttribution: ['CLS', 'LCP', 'FCP', 'FID', 'TTFB', 'INP'],
-  },
-};
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig
