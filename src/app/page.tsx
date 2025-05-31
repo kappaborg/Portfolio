@@ -1,64 +1,115 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
-import ProjectCard from '@/components/ProjectCard';
-import Scene from '@/components/Scene';
+import { motion } from 'framer-motion';
+import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
 
-const projects = [
-  {
-    id: 1,
-    title: "IP Location Mapper",
-    description: "Real-time IP tracking with weather and aviation data",
-    url: "https://ip-location-mapper-fin.vercel.app/",
-    icon: "🌍",
-    color: "from-blue-500 to-cyan-500"
-  },
-  // Add your other 3 projects here
-];
+// Lazy loaded components
+const ProjectCircle = dynamic(() => import('@/components/ProjectCircle'), {
+  loading: () => <div className="w-full h-96 flex items-center justify-center">
+    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-orange-500"></div>
+  </div>,
+  ssr: false
+});
+
+const Header = dynamic(() => import('@/components/Header'), {
+  ssr: true
+});
+
+const Footer = dynamic(() => import('@/components/Footer'), {
+  ssr: true
+});
+
+const CustomCursor = dynamic(() => import('@/components/CustomCursor'), {
+  ssr: false
+});
 
 export default function Home() {
-  const [hoveredProject, setHoveredProject] = useState<number | null>(null);
-
   return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white overflow-hidden">
-      {/* 3D Background Scene */}
-      <div className="fixed inset-0 z-0">
-        <Scene />
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10">
-        <div className="container mx-auto px-4 py-16">
-          {/* Hero Section */}
+    <main className="min-h-screen relative overflow-hidden bg-[#0a0a0a]">
+      <CustomCursor />
+      
+      {/* Animated background grid */}
+      <div className="absolute inset-0 bg-grid opacity-30" />
+      
+      {/* Animated gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-radial from-transparent via-[rgba(234,88,12,0.05)] to-transparent pointer-events-none" />
+      
+      {/* Animated particles or stars effect */}
+      <div className="absolute inset-0 overflow-hidden">
+        {[...Array(50)].map((_, i) => (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-16"
-          >
-            <h1 className="text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
-              Welcome to My Universe
-            </h1>
-            <p className="text-xl text-gray-300">
-              Explore my collection of web applications
-            </p>
-          </motion.div>
-
-          {/* Projects Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <AnimatePresence>
-              {projects.map((project) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  isHovered={hoveredProject === project.id}
-                  onHover={() => setHoveredProject(project.id)}
-                  onLeave={() => setHoveredProject(null)}
-                />
-              ))}
-            </AnimatePresence>
+            key={i}
+            className="absolute w-1 h-1 bg-orange-500 rounded-full"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ 
+              opacity: Math.random() * 0.5 + 0.25,
+              scale: Math.random() * 0.5 + 0.5,
+            }}
+            transition={{ 
+              duration: Math.random() * 2 + 2,
+              repeat: Infinity,
+              repeatType: "reverse",
+              delay: Math.random() * 2
+            }}
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              willChange: 'transform, opacity',
+              transform: 'translateZ(0)',
+            }}
+          />
+        ))}
+      </div>
+      
+      {/* Content */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        className="relative z-10 min-h-screen flex flex-col"
+      >
+        {/* Header Section */}
+        <Suspense fallback={
+          <div className="w-full h-32 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-500"></div>
           </div>
-        </div>
+        }>
+          <div className="mb-20">
+            <Header />
+          </div>
+        </Suspense>
+
+        {/* Projects Section */}
+        <Suspense fallback={
+          <div className="w-full h-96 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-orange-500"></div>
+          </div>
+        }>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.8 }}
+            className="flex-1 flex items-start justify-center relative z-20 mt-10"
+          >
+            <ProjectCircle />
+          </motion.div>
+        </Suspense>
+
+        {/* Footer */}
+        <Suspense fallback={
+          <div className="w-full h-16 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-orange-500"></div>
+          </div>
+        }>
+          <Footer />
+        </Suspense>
+      </motion.div>
+
+      {/* Additional decorative elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-r from-orange-500/10 to-transparent rounded-full blur-xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-32 h-32 bg-gradient-to-l from-orange-500/10 to-transparent rounded-full blur-xl" />
       </div>
     </main>
   );
