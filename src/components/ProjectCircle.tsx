@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useAnimation } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const projects = [
   {
@@ -272,15 +272,27 @@ const ProjectCircle = () => {
   const [orbitRotation, setOrbitRotation] = useState(0);
   const [autoRotate, setAutoRotate] = useState(true);
   const controls = useAnimation();
+  const isMobile = useCallback(() => window.innerWidth <= 768, []);
+  const [isMobileView, setIsMobileView] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(isMobile());
+    };
+
+    handleResize(); // Initial check
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isMobile]);
 
   useEffect(() => {
     if (autoRotate && !hoveredProject && !selectedProject) {
       const interval = setInterval(() => {
-        setOrbitRotation(prev => (prev + 0.2) % 360);
-      }, 50);
+        setOrbitRotation(prev => (prev + (isMobileView ? 0.1 : 0.2)) % 360);
+      }, isMobileView ? 100 : 50);
       return () => clearInterval(interval);
     }
-  }, [autoRotate, hoveredProject, selectedProject]);
+  }, [autoRotate, hoveredProject, selectedProject, isMobileView]);
 
   const handleProjectClick = async (url: string, id: number) => {
     setSelectedProject(id);
@@ -302,12 +314,12 @@ const ProjectCircle = () => {
   };
 
   return (
-    <div className="project-circle-container">
+    <div className={`project-circle-container ${isMobileView ? 'scale-75 -mt-20' : ''}`}>
       {/* Orbit Rings */}
       {Object.entries(orbits).map(([orbitClass, radius]) => (
         <div key={orbitClass} className={`orbit-ring ${orbitClass}`} style={{
-          width: `${radius * 2}px`,
-          height: `${radius * 2}px`,
+          width: `${radius * (isMobileView ? 1.5 : 2)}px`,
+          height: `${radius * (isMobileView ? 1.5 : 2)}px`,
           position: 'absolute',
           top: '50%',
           left: '50%',
@@ -320,8 +332,9 @@ const ProjectCircle = () => {
             className="ring-effect"
             animate={{ rotate: orbitClass.includes('inner') ? -360 : 360 }}
             transition={{
-              duration: orbitClass.includes('inner') ? 60 : 
-                       orbitClass.includes('middle') ? 80 : 100,
+              duration: orbitClass.includes('inner') ? (isMobileView ? 90 : 60) : 
+                       orbitClass.includes('middle') ? (isMobileView ? 120 : 80) : 
+                       (isMobileView ? 150 : 100),
               repeat: Infinity,
               ease: "linear"
             }}
@@ -332,7 +345,7 @@ const ProjectCircle = () => {
       {/* Solar Elements */}
       <div className="solar-system">
         {solarElements.map((element, index) => {
-          const radius = orbits[element.orbitClass];
+          const radius = orbits[element.orbitClass] * (isMobileView ? 0.75 : 1);
           const position = calculatePosition(index, solarElements.length, radius);
           
           return (
@@ -344,12 +357,15 @@ const ProjectCircle = () => {
                 top: '50%',
                 left: '50%',
                 transform: `translate(-50%, -50%)`,
-                width: `${20 * element.size}px`,
-                height: `${20 * element.size}px`,
+                width: `${20 * element.size * (isMobileView ? 0.75 : 1)}px`,
+                height: `${20 * element.size * (isMobileView ? 0.75 : 1)}px`,
                 background: `radial-gradient(circle at 30% 30%, ${element.color}, ${element.color}88)`,
                 boxShadow: `0 0 15px ${element.color}44`,
                 borderRadius: '50%',
-                zIndex: 5
+                zIndex: 5,
+                willChange: 'transform',
+                backfaceVisibility: 'hidden',
+                WebkitFontSmoothing: 'antialiased'
               }}
               animate={{
                 x: position.x,
@@ -358,12 +374,12 @@ const ProjectCircle = () => {
               }}
               transition={{
                 rotate: {
-                  duration: element.rotationDuration,
+                  duration: element.rotationDuration * (isMobileView ? 1.5 : 1),
                   repeat: Infinity,
                   ease: "linear"
                 },
-                x: { duration: 0.8, type: "spring", stiffness: 80, damping: 20 },
-                y: { duration: 0.8, type: "spring", stiffness: 80, damping: 20 }
+                x: { type: "spring", stiffness: 100, damping: 30 },
+                y: { type: "spring", stiffness: 100, damping: 30 }
               }}
             />
           );
@@ -373,7 +389,7 @@ const ProjectCircle = () => {
       {/* Project Cards */}
       <div className="orbit-container">
         {projects.map((project, index) => {
-          const position = calculatePosition(index, projects.length, 220);
+          const position = calculatePosition(index, projects.length, isMobileView ? 160 : 220);
           const isHovered = hoveredProject === project.id;
           const isSelected = selectedProject === project.id;
 
@@ -385,10 +401,13 @@ const ProjectCircle = () => {
                 position: 'absolute',
                 left: '50%',
                 top: '50%',
-                width: '90px',
-                height: '90px',
+                width: isMobileView ? '70px' : '90px',
+                height: isMobileView ? '70px' : '90px',
                 transformOrigin: 'center center',
-                zIndex: 10
+                zIndex: 10,
+                willChange: 'transform',
+                backfaceVisibility: 'hidden',
+                WebkitFontSmoothing: 'antialiased'
               }}
               animate={{
                 x: position.x,
@@ -399,26 +418,28 @@ const ProjectCircle = () => {
               }}
               transition={{
                 type: "spring",
-                stiffness: 80,
-                damping: 20,
-                duration: 0.8
+                stiffness: 100,
+                damping: 30
               }}
               onHoverStart={() => {
-                setHoveredProject(project.id);
-                setAutoRotate(false);
+                if (!isMobileView) {
+                  setHoveredProject(project.id);
+                  setAutoRotate(false);
+                }
               }}
               onHoverEnd={() => {
-                setHoveredProject(null);
-                setAutoRotate(true);
+                if (!isMobileView) {
+                  setHoveredProject(null);
+                  setAutoRotate(true);
+                }
               }}
               onClick={() => handleProjectClick(project.url, project.id)}
             >
               <motion.div 
                 className="project-card"
-                whileHover={{ scale: 1.15 }}
+                whileHover={!isMobileView ? { scale: 1.15 } : {}}
                 whileTap={{ scale: 0.95 }}
                 style={{
-                  width: '100%',
                   height: '100%',
                   display: 'flex',
                   alignItems: 'center',
@@ -429,7 +450,10 @@ const ProjectCircle = () => {
                   overflow: 'hidden',
                   padding: '0',
                   boxSizing: 'border-box',
-                  position: 'relative'
+                  position: 'relative',
+                  willChange: 'transform',
+                  backfaceVisibility: 'hidden',
+                  WebkitFontSmoothing: 'antialiased'
                 }}
               >
                 <motion.img
@@ -443,13 +467,12 @@ const ProjectCircle = () => {
                     objectFit: 'cover',
                     objectPosition: 'center',
                     imageRendering: '-webkit-optimize-contrast',
-                    transform: 'translateZ(0)',
+                    willChange: 'transform',
                     backfaceVisibility: 'hidden',
-                    WebkitFontSmoothing: 'antialiased',
-                    MozOsxFontSmoothing: 'grayscale'
+                    WebkitFontSmoothing: 'antialiased'
                   }}
                   animate={{
-                    scale: isHovered ? 1.1 : 1
+                    scale: isHovered && !isMobileView ? 1.1 : 1
                   }}
                   transition={{ 
                     duration: 0.3,
@@ -468,53 +491,33 @@ const ProjectCircle = () => {
         className="central-hub"
         animate={{ rotate: 360 }}
         transition={{ 
-          duration: 30, 
+          duration: isMobileView ? 45 : 30, 
           repeat: Infinity, 
           ease: "linear" 
         }}
-        onHoverStart={() => setAutoRotate(false)}
-        onHoverEnd={() => setAutoRotate(true)}
+        style={{
+          width: isMobileView ? '100px' : '150px',
+          height: isMobileView ? '100px' : '150px',
+          left: `calc(50% - ${isMobileView ? '50px' : '75px'})`,
+          top: `calc(50% - ${isMobileView ? '50px' : '75px'})`,
+        }}
+        onHoverStart={() => !isMobileView && setAutoRotate(false)}
+        onHoverEnd={() => !isMobileView && setAutoRotate(true)}
       >
         <motion.div 
           className="hub-inner"
-          animate={{
-            boxShadow: [
-              "0 0 20px rgba(234, 88, 12, 0.2)",
-              "0 0 40px rgba(234, 88, 12, 0.4)",
-              "0 0 20px rgba(234, 88, 12, 0.2)"
-            ]
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut"
+          style={{
+            width: isMobileView ? '90px' : '135px',
+            height: isMobileView ? '90px' : '135px',
           }}
         >
-          <motion.div
-            className="hub-content"
-            animate={{
-              scale: [1, 1.05, 1],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          >
-            <motion.div 
-              className="hub-text-container"
-              animate={{
-                opacity: [0.8, 1, 0.8]
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            >
-              <span className="hub-text">Projects</span>
-            </motion.div>
-          </motion.div>
+          <div className="hub-content">
+            <div className="hub-text-container">
+              <h2 className="hub-text" style={{ fontSize: isMobileView ? '0.75rem' : '0.85rem' }}>
+                PORTFOLIO
+              </h2>
+            </div>
+          </div>
         </motion.div>
       </motion.div>
 
